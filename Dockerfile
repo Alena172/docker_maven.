@@ -1,7 +1,7 @@
 FROM maven:3.8.4-jdk-11 AS builder
 WORKDIR /app
 COPY . .
-RUN mvn clean install
+RUN mvn -f /app/pom.xml clean install
 
 FROM openjdk:11-jre-slim
 WORKDIR /app
