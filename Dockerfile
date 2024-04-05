@@ -1,10 +1,11 @@
-FROM maven:3.8.4-openjdk-17 AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn package
+# Используем базовый образ с Java
+FROM openjdk:8-jdk-alpine
 
-FROM openjdk:17-jdk-alpine
-WORKDIR /app
-COPY --from=build /app/target/*.jar ./app.jar
-ENTRYPOINT ["java","-jar","./app.jar"]
+# Копируем JAR-файл в контейнер
+COPY target/application.jar /usr/app/application.jar
+
+# Устанавливаем рабочую директорию
+WORKDIR /usr/app
+
+# Команда для запуска приложения
+CMD ["java", "-jar", "application.jar"]
