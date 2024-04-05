@@ -1,14 +1,10 @@
-FROM maven:3.8.4-jdk-11 AS builder
-
+FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
-COPY . .
-
-# Copy the pom.xml file into the container
 COPY pom.xml .
+COPY src ./src
+RUN mvn package
 
-RUN mvn clean install
-
-FROM openjdk:11-jre-slim
+FROM openjdk:17-jdk-alpine
 WORKDIR /app
-COPY --from=builder /app/target/my-application.jar .
-CMD ["java", "-jar", "my-application.jar"]
+COPY --from=build /app/target/*.jar ./app.jar
+ENTRYPOINT ["java","-jar","./app.jar"]
