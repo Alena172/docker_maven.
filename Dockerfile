@@ -5,7 +5,7 @@ FROM openjdk:8-jdk-alpine
 WORKDIR /usr/app
 
 # Копируем скомпилированный JAR-файл в контейнер
-COPY target/your-application.jar your-application.jar
+COPY target/my-application.jar my-application.jar
 
 # Команда для запуска приложения
-CMD ["java", "-jar", "your-application.jar"]
+CMD ["java", "-jar", "my-application.jar"]
