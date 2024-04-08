@@ -1,11 +1,21 @@
-# Используем базовый образ с Java
-FROM openjdk:8-jdk-alpine
+# Используем официальный образ Maven для сборки приложения
+FROM maven:3.8.4-openjdk-17-slim AS build
 
-# Создание рабочего каталога
-WORKDIR /usr/app
+# Копируем исходный код в контейнер
+COPY ./ /app
+WORKDIR /app
 
-# Копируем скомпилированный JAR-файл в контейнер
-COPY target/my-application.jar my-application.jar
+# Собираем приложение с помощью Maven
+RUN mvn clean package -DskipTests
 
-# Команда для запуска приложения
-CMD ["java", "-jar", "my-application.jar"]
+# Отдельный этап сборки для уменьшения размера образа
+FROM adoptopenjdk/openjdk17:alpine-jre
+
+# Копируем собранный JAR-файл из предыдущего этапа в контейнер
+COPY --from=build /app/target/*.jar /app/app.jar
+
+# Указываем порт, который будет прослушивать приложение
+EXPOSE 8080
+
+# Команда для запуска приложения при старте контейнера
+CMD ["java", "-jar", "/app/app.jar"]
