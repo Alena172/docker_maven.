@@ -9,7 +9,7 @@ WORKDIR /app
 RUN mvn clean package -DskipTests
 
 # Отдельный этап сборки для уменьшения размера образа
-FROM adoptopenjdk/openjdk17:alpine-jre
+FROM openjdk:17-jdk-alpine
 
 # Копируем собранный JAR-файл из предыдущего этапа в контейнер
 COPY --from=build /app/target/*.jar /app/app.jar
